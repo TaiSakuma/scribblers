@@ -5,7 +5,7 @@ import numpy as np
 
 from scribblers.essentials import FuncOnNumpyArrays
 from scribblers.obj import Object
-from .mock import MockEvent
+from .mockevent import MockEvent
 
 ##__________________________________________________________________||
 @pytest.fixture()

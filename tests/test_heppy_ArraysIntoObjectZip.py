@@ -4,7 +4,7 @@ import pytest
 
 from scribblers.heppy import ArraysIntoObjectZip
 from scribblers.obj import Object
-from .mock import MockEvent
+from .mockevent import MockEvent
 
 ##__________________________________________________________________||
 @pytest.fixture()

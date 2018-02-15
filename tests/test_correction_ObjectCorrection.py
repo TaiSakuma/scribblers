@@ -6,7 +6,7 @@ import copy
 
 from scribblers.correction import ObjectCorrection
 from scribblers.obj import Object
-from .mock import MockEvent
+from .mockevent import MockEvent
 
 ##__________________________________________________________________||
 class MockCorrection():

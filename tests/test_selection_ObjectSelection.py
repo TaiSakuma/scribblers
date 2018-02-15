@@ -4,7 +4,7 @@ import pytest
 
 from scribblers.selection import ObjectSelection
 from scribblers.obj import Object
-from .mock import MockEvent
+from .mockevent import MockEvent
 
 ##__________________________________________________________________||
 class MockSelection():

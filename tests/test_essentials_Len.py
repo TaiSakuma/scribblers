@@ -4,7 +4,7 @@ import pytest
 
 from scribblers.essentials import Len
 from scribblers.obj import Object
-from .mock import MockEvent
+from .mockevent import MockEvent
 
 ##__________________________________________________________________||
 class MockTClonesArray(object):

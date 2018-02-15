@@ -3,7 +3,7 @@
 import pytest
 
 from scribblers.heppy import SMSMass
-from .mock import MockEvent
+from .mockevent import MockEvent
 
 ##__________________________________________________________________||
 @pytest.fixture()

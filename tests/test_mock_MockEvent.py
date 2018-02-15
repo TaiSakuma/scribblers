@@ -1,7 +1,7 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 import pytest
 
-from .mock import MockEvent
+from .mockevent import MockEvent
 
 ##__________________________________________________________________||
 def test_setattr_same_object():

@@ -6,7 +6,7 @@ import math
 
 from scribblers.match import ObjectMatch, DeltaR
 from scribblers.obj import Object
-from .mock import MockEvent
+from .mockevent import MockEvent
 
 ##__________________________________________________________________||
 class MockDistance(object):
