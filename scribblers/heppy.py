@@ -16,8 +16,13 @@ class ComponentName(object):
         self.vals = [ ]
         event.componentName = self.vals
 
-        self.vals[:] = [event.component.name]
+        try:
+            name = event.config.component.name
+        except AttributeError:
+            name = event.component.name
         # e.g., "HTMHT_Run2015D_PromptReco_25ns"
+
+        self.vals[:] = [name]
 
     def event(self, event):
         event.componentName = self.vals
