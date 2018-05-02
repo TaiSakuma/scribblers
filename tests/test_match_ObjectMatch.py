@@ -18,7 +18,7 @@ class MockDistance(object):
         )
         return '{}({})'.format(
             self.__class__.__name__,
-            ', '.join(['{} = {!r}'.format(n, v) for n, v in name_value_pairs]),
+            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
         )
 
     def __call__(self, obj1, obj2):
@@ -28,14 +28,14 @@ class MockDistance(object):
 @pytest.fixture()
 def obj():
     return ObjectMatch(
-        in_obj1 = 'A',
-        in_obj2 = 'B',
-        out_obj1_matched = 'Amatched',
-        out_obj2_matched_sorted = 'BmatchedSorted',
-        out_obj1_unmatched = 'Aunmatched',
-        out_obj2_unmatched = 'Bunmatched',
-        distance_func = MockDistance(),
-        max_distance = 2
+        in_obj1='A',
+        in_obj2='B',
+        out_obj1_matched='Amatched',
+        out_obj2_matched_sorted='BmatchedSorted',
+        out_obj1_unmatched='Aunmatched',
+        out_obj2_unmatched='Bunmatched',
+        distance_func=MockDistance(),
+        max_distance=2
     )
 
 @pytest.fixture()
@@ -93,7 +93,7 @@ def test_match_empty_AB(obj):
 
     A = [ ]
     B = [ ]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched=obj._match(A, B)
 
     assert len(Amatched) == 0
     assert len(BmatchedSorted) == 0
@@ -107,7 +107,7 @@ def test_match_empty_A(obj):
 
     A = [ ]
     B = [o1, o2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched=obj._match(A, B)
 
     assert Amatched == [ ]
     assert BmatchedSorted == [ ]
@@ -121,7 +121,7 @@ def test_match_empty_B(obj):
 
     A = [o1, o2]
     B = [ ]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched=obj._match(A, B)
 
     assert Amatched == [ ]
     assert BmatchedSorted == [ ]
@@ -137,7 +137,7 @@ def test_match_simple(obj):
 
     A = [a1, a2]
     B = [b1, b2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched=obj._match(A, B)
 
     assert Amatched == [a1]
     assert BmatchedSorted == [b1]
@@ -153,7 +153,7 @@ def test_match_2A_within_distance(obj):
 
     A = [a1, a2]
     B = [b1, b2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched=obj._match(A, B)
 
     assert Amatched == [a2]
     assert BmatchedSorted == [b1]
@@ -169,7 +169,7 @@ def test_match_2B_within_distance(obj):
 
     A = [a1, a2]
     B = [b1, b2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched=obj._match(A, B)
 
     assert Amatched == [a1]
     assert BmatchedSorted == [b1]
