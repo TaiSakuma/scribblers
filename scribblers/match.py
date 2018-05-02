@@ -103,61 +103,62 @@ class ObjectMatch(object):
         obj1 = getattr(event, self.obj1_name)
         obj2 = getattr(event, self.obj2_name)
 
-        m1, m2, m3, m4 = self._match(obj1, obj2, self.distance_func, self.max_distance)
+        m1, m2, m3, m4 = match(obj1, obj2, self.distance_func, self.max_distance)
         self.obj1_matched[:] = m1
         self.obj2_matched_sorted[:] = m2
         self.obj1_unmatched[:] = m3
         self.obj2_unmatched[:] = m4
-
-    def _match(self, obj1, obj2, distance_func, max_distance):
-
-        distances = [[(i1, i2, distance_func(o1, o2)) for i1, o1 in enumerate(obj1)] for i2, o2 in enumerate(obj2)]
-        # a list of lists of (index1, index2, distance) grouped by index2
-        # e.g.,
-        # [
-        #     [(0, 0, 13.0), (1, 0, 10.0), (2, 0, 7.0), (3, 0, 4.0)],
-        #     [(0, 1, 6.5), (1, 1, 3.5), (2, 1, 0.5), (3, 1, 2.5)],
-        #     [(0, 2, 5.0), (1, 2, 2.0), (2, 2, 1.0), (3, 2, 4.0)],
-        #     [(0, 3, 2.0), (1, 3, 1.0), (2, 3, 4.0), (3, 3, 7.0)],
-        #     [(0, 4, 1.0), (1, 4, 2.0), (2, 4, 5.0), (3, 4, 8.0)]
-        # ]
-
-        distances = [l for l in distances if l]
-        # remove empty sublists
-
-        distances = (min(l, key=operator.itemgetter(2)) for l in distances)
-        # select one with the minimum distance in each sublist
-        # e.g., [(3, 0, 4.0), (2, 1, 0.5), (2, 2, 1.0), (1, 3, 1.0), (0, 4, 1.0)]
-
-        distances = (l for l in distances if l[2] <= max_distance)
-        # remove ones with distances greater than maximum distances
-        # e.g., [(2, 1, 0.5), (2, 2, 1.0), (1, 3, 1.0), (0, 4, 1.0)]
-        # note index1 == 2 happens twice
-
-        distances = sorted(distances, key=operator.itemgetter(0))
-        # sort by index1
-        # e.g., [(0, 4, 1.0), (1, 3, 1.0), (2, 1, 0.5), (2, 2, 1.0)]
-
-        distances = [list(g) for _, g in itertools.groupby(distances, key=operator.itemgetter(0))]
-        # group by index1
-        # e.g., [[(0, 4, 1.0)], [(1, 3, 1.0)], [(2, 1, 0.5), (2, 2, 1.0)]]
-
-        distances = [min(l, key=operator.itemgetter(2)) for l in distances]
-        # select one with the minimum distance in each sublist
-        # e.g., [(0, 4, 1.0), (1, 3, 1.0), (2, 1, 0.5)]
-
-        obj1_matched = [obj1[i] for i, j, d in distances]
-        obj2_matched_sorted = [obj2[j] for i, j, d in distances]
-
-        obj1_unmatched = [o for o in obj1 if o not in obj1_matched]
-        obj2_unmatched = [o for o in obj2 if o not in obj2_matched_sorted]
-
-        return obj1_matched, obj2_matched_sorted, obj1_unmatched, obj2_unmatched
 
     def end(self):
         self.obj1_matched = None
         self.obj1_unmatched = None
         self.obj2_matched_sorted = None
         self.obj2_unmatched = None
+
+##__________________________________________________________________||
+def match(obj1, obj2, distance_func, max_distance):
+
+    distances = [[(i1, i2, distance_func(o1, o2)) for i1, o1 in enumerate(obj1)] for i2, o2 in enumerate(obj2)]
+    # a list of lists of (index1, index2, distance) grouped by index2
+    # e.g.,
+    # [
+    #     [(0, 0, 13.0), (1, 0, 10.0), (2, 0, 7.0), (3, 0, 4.0)],
+    #     [(0, 1, 6.5), (1, 1, 3.5), (2, 1, 0.5), (3, 1, 2.5)],
+    #     [(0, 2, 5.0), (1, 2, 2.0), (2, 2, 1.0), (3, 2, 4.0)],
+    #     [(0, 3, 2.0), (1, 3, 1.0), (2, 3, 4.0), (3, 3, 7.0)],
+    #     [(0, 4, 1.0), (1, 4, 2.0), (2, 4, 5.0), (3, 4, 8.0)]
+    # ]
+
+    distances = [l for l in distances if l]
+    # remove empty sublists
+
+    distances = (min(l, key=operator.itemgetter(2)) for l in distances)
+    # select one with the minimum distance in each sublist
+    # e.g., [(3, 0, 4.0), (2, 1, 0.5), (2, 2, 1.0), (1, 3, 1.0), (0, 4, 1.0)]
+
+    distances = (l for l in distances if l[2] <= max_distance)
+    # remove ones with distances greater than maximum distances
+    # e.g., [(2, 1, 0.5), (2, 2, 1.0), (1, 3, 1.0), (0, 4, 1.0)]
+    # note index1 == 2 happens twice
+
+    distances = sorted(distances, key=operator.itemgetter(0))
+    # sort by index1
+    # e.g., [(0, 4, 1.0), (1, 3, 1.0), (2, 1, 0.5), (2, 2, 1.0)]
+
+    distances = [list(g) for _, g in itertools.groupby(distances, key=operator.itemgetter(0))]
+    # group by index1
+    # e.g., [[(0, 4, 1.0)], [(1, 3, 1.0)], [(2, 1, 0.5), (2, 2, 1.0)]]
+
+    distances = [min(l, key=operator.itemgetter(2)) for l in distances]
+    # select one with the minimum distance in each sublist
+    # e.g., [(0, 4, 1.0), (1, 3, 1.0), (2, 1, 0.5)]
+
+    obj1_matched = [obj1[i] for i, j, d in distances]
+    obj2_matched_sorted = [obj2[j] for i, j, d in distances]
+
+    obj1_unmatched = [o for o in obj1 if o not in obj1_matched]
+    obj2_unmatched = [o for o in obj2 if o not in obj2_matched_sorted]
+
+    return obj1_matched, obj2_matched_sorted, obj1_unmatched, obj2_unmatched
 
 ##__________________________________________________________________||

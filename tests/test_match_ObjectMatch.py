@@ -7,7 +7,7 @@ try:
 except ImportError:
     import mock
 
-from scribblers.match import ObjectMatch, DeltaR
+from scribblers.match import ObjectMatch, DeltaR, match
 from scribblers.obj import Object
 from .mockevent import MockEvent
 
@@ -86,7 +86,7 @@ def test_match_empty_AB(obj, mock_distance_func):
 
     A = [ ]
     B = [ ]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
 
     assert len(Amatched) == 0
     assert len(BmatchedSorted) == 0
@@ -100,7 +100,7 @@ def test_match_empty_A(obj, mock_distance_func):
 
     A = [ ]
     B = [o1, o2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
 
     assert Amatched == [ ]
     assert BmatchedSorted == [ ]
@@ -114,7 +114,7 @@ def test_match_empty_B(obj, mock_distance_func):
 
     A = [o1, o2]
     B = [ ]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
 
     assert Amatched == [ ]
     assert BmatchedSorted == [ ]
@@ -130,7 +130,7 @@ def test_match_simple(obj, mock_distance_func):
 
     A = [a1, a2]
     B = [b1, b2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
 
     assert Amatched == [a1]
     assert BmatchedSorted == [b1]
@@ -146,7 +146,7 @@ def test_match_2A_within_distance(obj, mock_distance_func):
 
     A = [a1, a2]
     B = [b1, b2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
 
     assert Amatched == [a2]
     assert BmatchedSorted == [b1]
@@ -162,7 +162,7 @@ def test_match_2B_within_distance(obj, mock_distance_func):
 
     A = [a1, a2]
     B = [b1, b2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = obj._match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
 
     assert Amatched == [a1]
     assert BmatchedSorted == [b1]
