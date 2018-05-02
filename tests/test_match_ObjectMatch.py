@@ -1,32 +1,21 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
-
+import math
 import pytest
 
-import math
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 
 from scribblers.match import ObjectMatch, DeltaR
 from scribblers.obj import Object
 from .mockevent import MockEvent
 
 ##__________________________________________________________________||
-class MockDistance(object):
-    def __init__(self):
-        pass
-
-    def __repr__(self):
-        name_value_pairs = (
-        )
-        return '{}({})'.format(
-            self.__class__.__name__,
-            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
-        )
-
-    def __call__(self, obj1, obj2):
-        return math.hypot(obj1.x - obj2.x, obj1.y - obj2.y)
-
-##__________________________________________________________________||
 @pytest.fixture()
 def obj():
+    distance_func = mock.Mock()
+    distance_func.side_effect = lambda o1, o2: math.hypot(o1.x - o2.x, o1.y - o2.y)
     return ObjectMatch(
         in_obj1='A',
         in_obj2='B',
@@ -34,7 +23,7 @@ def obj():
         out_obj2_matched_sorted='BmatchedSorted',
         out_obj1_unmatched='Aunmatched',
         out_obj2_unmatched='Bunmatched',
-        distance_func=MockDistance(),
+        distance_func=distance_func,
         max_distance=2
     )
 
