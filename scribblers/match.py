@@ -6,8 +6,8 @@ import numpy as np
 ##__________________________________________________________________||
 class DeltaR(object):
     def __init__(self,
-                 obj1_eta_phi_names = ('eta', 'phi'),
-                 obj2_eta_phi_names = ('eta', 'phi')
+                 obj1_eta_phi_names=('eta', 'phi'),
+                 obj2_eta_phi_names=('eta', 'phi')
     ):
         self.obj1_eta_phi_names = obj1_eta_phi_names
         self.obj2_eta_phi_names = obj2_eta_phi_names
@@ -19,7 +19,7 @@ class DeltaR(object):
         )
         return '{}({})'.format(
             self.__class__.__name__,
-            ', '.join(['{} = {!r}'.format(n, v) for n, v in name_value_pairs]),
+            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
         )
 
     def __call__(self, obj1, obj2):
@@ -47,11 +47,11 @@ class DeltaR(object):
 class ObjectMatch(object):
     def __init__(self, in_obj1, in_obj2,
                  out_obj1_matched,
-                 out_obj2_matched_sorted = None,
-                 out_obj1_unmatched = None,
-                 out_obj2_unmatched = None,
-                 distance_func = DeltaR(),
-                 max_distance = 0.4
+                 out_obj2_matched_sorted=None,
+                 out_obj1_unmatched=None,
+                 out_obj2_unmatched=None,
+                 distance_func=DeltaR(),
+                 max_distance=0.4
     ):
         self.obj1_name = in_obj1
         self.obj2_name = in_obj2
@@ -76,7 +76,7 @@ class ObjectMatch(object):
         )
         return '{}({})'.format(
             self.__class__.__name__,
-            ', '.join(['{} = {!r}'.format(n, v) for n, v in name_value_pairs]),
+            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
         )
 
     def begin(self, event):
@@ -121,7 +121,7 @@ class ObjectMatch(object):
         distances = [l for l in distances if l]
         # remove empty sublists
 
-        distances = (min(l, key = operator.itemgetter(2)) for l in distances)
+        distances = (min(l, key=operator.itemgetter(2)) for l in distances)
         # select one with the minimum distance in each sublist
         # e.g., [(3, 0, 4.0), (2, 1, 0.5), (2, 2, 1.0), (1, 3, 1.0), (0, 4, 1.0)]
 
@@ -130,15 +130,15 @@ class ObjectMatch(object):
         # e.g., [(2, 1, 0.5), (2, 2, 1.0), (1, 3, 1.0), (0, 4, 1.0)]
         # note index1 == 2 happens twice
 
-        distances = sorted(distances, key = operator.itemgetter(0))
+        distances = sorted(distances, key=operator.itemgetter(0))
         # sort by index1
         # e.g., [(0, 4, 1.0), (1, 3, 1.0), (2, 1, 0.5), (2, 2, 1.0)]
 
-        distances = [list(g) for _, g in itertools.groupby(distances, key = operator.itemgetter(0))]
+        distances = [list(g) for _, g in itertools.groupby(distances, key=operator.itemgetter(0))]
         # group by index1
         # e.g., [[(0, 4, 1.0)], [(1, 3, 1.0)], [(2, 1, 0.5), (2, 2, 1.0)]]
 
-        distances = [min(l, key = operator.itemgetter(2)) for l in distances]
+        distances = [min(l, key=operator.itemgetter(2)) for l in distances]
         # select one with the minimum distance in each sublist
         # e.g., [(0, 4, 1.0), (1, 3, 1.0), (2, 1, 0.5)]
 
