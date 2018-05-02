@@ -103,11 +103,15 @@ class ObjectMatch(object):
         obj1 = getattr(event, self.obj1_name)
         obj2 = getattr(event, self.obj2_name)
 
-        self.obj1_matched[:], self.obj2_matched_sorted[:], self.obj1_unmatched[:], self.obj2_unmatched[:] = self._match(obj1, obj2)
+        m1, m2, m3, m4 = self._match(obj1, obj2, self.distance_func, self.max_distance)
+        self.obj1_matched[:] = m1
+        self.obj2_matched_sorted[:] = m2
+        self.obj1_unmatched[:] = m3
+        self.obj2_unmatched[:] = m4
 
-    def _match(self, obj1, obj2):
+    def _match(self, obj1, obj2, distance_func, max_distance):
 
-        distances = [[(i1, i2, self.distance_func(o1, o2)) for i1, o1 in enumerate(obj1)] for i2, o2 in enumerate(obj2)]
+        distances = [[(i1, i2, distance_func(o1, o2)) for i1, o1 in enumerate(obj1)] for i2, o2 in enumerate(obj2)]
         # a list of lists of (index1, index2, distance) grouped by index2
         # e.g.,
         # [
@@ -125,7 +129,7 @@ class ObjectMatch(object):
         # select one with the minimum distance in each sublist
         # e.g., [(3, 0, 4.0), (2, 1, 0.5), (2, 2, 1.0), (1, 3, 1.0), (0, 4, 1.0)]
 
-        distances = (l for l in distances if l[2] <= self.max_distance)
+        distances = (l for l in distances if l[2] <= max_distance)
         # remove ones with distances greater than maximum distances
         # e.g., [(2, 1, 0.5), (2, 2, 1.0), (1, 3, 1.0), (0, 4, 1.0)]
         # note index1 == 2 happens twice
