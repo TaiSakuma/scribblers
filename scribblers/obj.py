@@ -25,7 +25,7 @@ class Object(object):
         else:
             if len(args) > 1 or kwargs:
                 logger = logging.getLogger(__name__)
-                logger.warning('extra arguments are given: args = {}, kwargs = {}'.format(args[1:], kwargs))
+                logger.warning('extra arguments are given: args={}, kwargs={}'.format(args[1:], kwargs))
 
         object.__setattr__(self, '_attrdict', attrdict)
         # self._attrdict = attrdict # this would cause infinite
@@ -38,7 +38,7 @@ class Object(object):
     def __repr__(self):
         return '{}({})'.format(
             self.__class__.__name__,
-            ', '.join(['{} = {!r}'.format(k, v) for k, v in self._attrdict.items()])
+            ', '.join(['{}={!r}'.format(k, v) for k, v in self._attrdict.items()])
         )
 
     def __getattr__(self, attr):
@@ -61,7 +61,7 @@ class Flatten(object):
     """
     def __init__(self,
                  in_obj, in_attr_names,
-                 out_array_prefix = None, out_array_names = None
+                 out_array_prefix=None, out_array_names=None
     ):
 
         self.in_obj = in_obj
@@ -77,7 +77,7 @@ class Flatten(object):
         # e.g., ['pt', 'eta', 'phi']
 
         if not len(self.in_attr_names) == len(self.out_array_names):
-            raise ValueError('in_attr_names and out_array_names must have the same length: in_attr_names = {}, out_array_names = {}'.format(in_attr_names, out_array_names))
+            raise ValueError('in_attr_names and out_array_names must have the same length: in_attr_names={}, out_array_names={}'.format(in_attr_names, out_array_names))
 
         self.out_names = ['{}_{}'.format(self.out_array_prefix, n) for n in self.out_array_names]
         # e.g., ['jet_pt', 'jet_eta', 'jet_phi']
@@ -91,7 +91,7 @@ class Flatten(object):
         )
         return '{}({})'.format(
             self.__class__.__name__,
-            ', '.join(['{} = {!r}'.format(n, v) for n, v in name_value_pairs]),
+            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
         )
 
     def begin(self, event):
