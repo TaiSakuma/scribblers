@@ -7,7 +7,7 @@ try:
 except ImportError:
     import mock
 
-from scribblers.match import match
+from scribblers.match import split_matched_unmatched
 from scribblers.obj import Object
 
 ##__________________________________________________________________||
@@ -22,7 +22,7 @@ def test_match_empty_AB(mock_distance_func):
 
     A = [ ]
     B = [ ]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = split_matched_unmatched(A, B, mock_distance_func, 2)
 
     assert len(Amatched) == 0
     assert len(BmatchedSorted) == 0
@@ -36,7 +36,7 @@ def test_match_empty_A(mock_distance_func):
 
     A = [ ]
     B = [o1, o2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = split_matched_unmatched(A, B, mock_distance_func, 2)
 
     assert Amatched == [ ]
     assert BmatchedSorted == [ ]
@@ -50,7 +50,7 @@ def test_match_empty_B(mock_distance_func):
 
     A = [o1, o2]
     B = [ ]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = split_matched_unmatched(A, B, mock_distance_func, 2)
 
     assert Amatched == [ ]
     assert BmatchedSorted == [ ]
@@ -66,7 +66,7 @@ def test_match_simple(mock_distance_func):
 
     A = [a1, a2]
     B = [b1, b2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = split_matched_unmatched(A, B, mock_distance_func, 2)
 
     assert Amatched == [a1]
     assert BmatchedSorted == [b1]
@@ -82,7 +82,7 @@ def test_match_2A_within_distance(mock_distance_func):
 
     A = [a1, a2]
     B = [b1, b2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = split_matched_unmatched(A, B, mock_distance_func, 2)
 
     assert Amatched == [a2]
     assert BmatchedSorted == [b1]
@@ -98,7 +98,7 @@ def test_match_2B_within_distance(mock_distance_func):
 
     A = [a1, a2]
     B = [b1, b2]
-    Amatched, BmatchedSorted, Aunmatched, Bunmatched = match(A, B, mock_distance_func, 2)
+    Amatched, BmatchedSorted, Aunmatched, Bunmatched = split_matched_unmatched(A, B, mock_distance_func, 2)
 
     assert Amatched == [a1]
     assert BmatchedSorted == [b1]

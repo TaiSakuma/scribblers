@@ -103,11 +103,11 @@ class ObjectMatch(object):
         obj1 = getattr(event, self.obj1_name)
         obj2 = getattr(event, self.obj2_name)
 
-        m1, m2, m3, m4 = match(obj1, obj2, self.distance_func, self.max_distance)
+        m1, m2, u1, u2 = split_matched_unmatched(obj1, obj2, self.distance_func, self.max_distance)
         self.obj1_matched[:] = m1
         self.obj2_matched_sorted[:] = m2
-        self.obj1_unmatched[:] = m3
-        self.obj2_unmatched[:] = m4
+        self.obj1_unmatched[:] = u1
+        self.obj2_unmatched[:] = u2
 
     def end(self):
         self.obj1_matched = None
@@ -116,7 +116,7 @@ class ObjectMatch(object):
         self.obj2_unmatched = None
 
 ##__________________________________________________________________||
-def match(obj1, obj2, distance_func, max_distance):
+def split_matched_unmatched(obj1, obj2, distance_func, max_distance):
 
     distances = [[(i1, i2, distance_func(o1, o2)) for i1, o1 in enumerate(obj1)] for i2, o2 in enumerate(obj2)]
     # a list of lists of (index1, index2, distance) grouped by index2
