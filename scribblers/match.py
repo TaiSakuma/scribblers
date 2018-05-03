@@ -95,7 +95,7 @@ class ObjectMatch(object):
         if self.obj1_unmatched_name is not None:
             setattr(event, self.obj1_unmatched_name, self.obj1_unmatched)
 
-        if self.obj2_unmatched_name  is not None:
+        if self.obj2_unmatched_name is not None:
             setattr(event, self.obj2_unmatched_name, self.obj2_unmatched)
 
     def event(self, event):
