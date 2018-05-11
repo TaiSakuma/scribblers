@@ -30,7 +30,6 @@ def test_event_with_config_named_tuple(obj, event):
 def test_event_with_config_dict(obj, event):
     del event.config.component # raise AttributeError if component is accessed
     event.config['component'].name = 'TTJets'
-    print event.config['component'].name
     obj.begin(event)
     obj.event(event)
     assert ['TTJets'] == event.componentName
