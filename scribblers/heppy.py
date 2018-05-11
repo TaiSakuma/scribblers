@@ -19,7 +19,10 @@ class ComponentName(object):
         try:
             name = event.config.component.name
         except AttributeError:
-            name = event.component.name
+            try:
+                name = event.config['component'].name
+            except AttributeError:
+                name = event.component.name
         # e.g., "HTMHT_Run2015D_PromptReco_25ns"
 
         self.vals[:] = [name]

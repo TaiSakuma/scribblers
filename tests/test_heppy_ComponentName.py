@@ -11,7 +11,7 @@ from scribblers.heppy import ComponentName
 ##__________________________________________________________________||
 @pytest.fixture()
 def event():
-    return mock.Mock()
+    return mock.MagicMock()
 
 @pytest.fixture()
 def obj():
@@ -21,14 +21,23 @@ def obj():
 def test_repr(obj):
     repr(obj)
 
-def test_event_with_config(obj, event):
+def test_event_with_config_named_tuple(obj, event):
     event.config.component.name = 'TTJets'
+    obj.begin(event)
+    obj.event(event)
+    assert ['TTJets'] == event.componentName
+
+def test_event_with_config_dict(obj, event):
+    del event.config.component # raise AttributeError if component is accessed
+    event.config['component'].name = 'TTJets'
+    print event.config['component'].name
     obj.begin(event)
     obj.event(event)
     assert ['TTJets'] == event.componentName
 
 def test_event_without_config(obj, event):
     del event.config.component # raise AttributeError if component is accessed
+    del event.config['component'].name
     event.component.name = 'TTJets'
     obj.begin(event)
     obj.event(event)
