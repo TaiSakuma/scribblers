@@ -8,8 +8,18 @@ try:
 except ImportError:
     import mock
 
-from scribblers.delphes import JetAddMatchedObjects
-from scribblers.delphes import FourVecSum
+has_no_ROOT = False
+try:
+    import ROOT
+except ImportError:
+    has_no_ROOT = True
+
+pytestmark = pytest.mark.skipif(has_no_ROOT, reason="has no ROOT")
+
+if not has_no_ROOT:
+    from scribblers.delphes import JetAddMatchedObjects
+    from scribblers.delphes import FourVecSum
+
 from scribblers.match import DeltaR
 from scribblers.obj import Object
 
