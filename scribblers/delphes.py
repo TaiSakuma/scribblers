@@ -160,7 +160,19 @@ class JetAddMatchedObjects(object):
         # each obj1 can be matched to multiple obj2s
         # each obj2 can be matched to at most one obj1
 
-        distances = [[(i1, i2, self.distance_func(o1, o2)) for i1, o1 in enumerate(obj1)] for i2, o2 in enumerate(obj2)]
+        matched = self._match(obj1, obj2, self.distance_func, self.max_distance)
+        # e.g., {0: [4], 2: [1, 2], 1: [3]}
+        # key: obj1 index
+        # val: list of obj2 indices
+
+        self.out_obj1[:] = self._add(obj1, obj2, matched)
+
+    def end(self):
+        self.out_obj1 = None
+
+    def _match(self, obj1, obj2, distance_func, max_distance):
+
+        distances = [[(i1, i2, distance_func(o1, o2)) for i1, o1 in enumerate(obj1)] for i2, o2 in enumerate(obj2)]
         # a list of lists of (index1, index2, distance) grouped by index2
         # e.g.,
         # [
@@ -174,11 +186,11 @@ class JetAddMatchedObjects(object):
         distances = [l for l in distances if l]
         # remove empty sublists
 
-        distances = (min(l, key = operator.itemgetter(2)) for l in distances)
+        distances = (min(l, key=operator.itemgetter(2)) for l in distances)
         # select one with the minimum distance in each sublist
         # e.g., [(3, 0, 4.0), (2, 1, 0.5), (2, 2, 1.0), (1, 3, 1.0), (0, 4, 1.0)]
 
-        distances = (l for l in distances if l[2] <= self.max_distance)
+        distances = (l for l in distances if l[2] <= max_distance)
         # remove ones with distances greater than maximum distances
         # e.g., [(2, 1, 0.5), (2, 2, 1.0), (1, 3, 1.0), (0, 4, 1.0)]
         # note index1 == 2 happens twice
@@ -187,27 +199,33 @@ class JetAddMatchedObjects(object):
         # sort by index1
         # e.g., [(0, 4, 1.0), (1, 3, 1.0), (2, 1, 0.5), (2, 2, 1.0)]
 
-        distances = [list(g) for _, g in itertools.groupby(distances, key = operator.itemgetter(0))]
+        distances = [list(g) for _, g in itertools.groupby(distances, key=operator.itemgetter(0))]
         # group by index1
         # e.g., [[(0, 4, 1.0)], [(1, 3, 1.0)], [(2, 1, 0.5), (2, 2, 1.0)]]
 
-        distances = {e[0][0]: [ee[1] for ee in e] for e in distances}
-        # convert to dict with the key index1
+        ret = {e[0][0]: [ee[1] for ee in e] for e in distances}
+        # convert to dict
+        # key: index1
+        # val: list of indices2
+        # e.g., {0: [4], 2: [1, 2], 1: [3]}
 
+        return ret
 
-        out = [ ]
+    def _add(self, obj1, obj2, matched):
+
+        ret = [ ]
         for i, o1 in enumerate(obj1):
 
             o1_copy = copy.copy(o1)
 
-            if not i in distances:
-                out.append(o1_copy)
+            if not i in matched:
+                ret.append(o1_copy)
                 continue
 
             p4 = ROOT.TLorentzVector()
             p4.SetPtEtaPhiM(o1.PT, o1.Eta, o1.Phi, o1.Mass)
 
-            o2s = [obj2[j] for j in distances[i]]
+            o2s = [obj2[j] for j in matched[i]]
 
             for o2 in o2s:
 
@@ -219,12 +237,9 @@ class JetAddMatchedObjects(object):
             o1_copy.Eta = p4.Eta()
             o1_copy.Phi = p4.Phi()
             o1_copy.Mass = p4.M()
-            out.append(o1_copy)
+            ret.append(o1_copy)
 
-        self.out_obj1[:] = out
-
-    def end(self):
-        self.out_obj1 = None
+        return ret
 
 ##__________________________________________________________________||
 
