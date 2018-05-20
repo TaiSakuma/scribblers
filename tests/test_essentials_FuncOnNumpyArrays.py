@@ -43,6 +43,17 @@ def obj_sum(event):
     ret = FuncOnNumpyArrays(
         src_arrays=['pt'],
         out_name='ht',
+        func=functools.partial(np.sum)
+    )
+    ret.begin(event)
+    yield ret
+    ret.end()
+
+@pytest.fixture()
+def obj_sum_keepdims(event):
+    ret = FuncOnNumpyArrays(
+        src_arrays=['pt'],
+        out_name='ht',
         func=functools.partial(np.sum, keepdims=True)
     )
     ret.begin(event)
@@ -71,6 +82,14 @@ def test_event_divide(obj_divide, event):
 
 def test_event_sum(obj_sum, event):
     obj = obj_sum
+    out = event.ht
+    event.pt[:] = [25.0, 12.0]
+    obj.event(event)
+    assert event.ht == [pytest.approx(37.0)]
+    assert out is event.ht
+
+def test_event_sum_keepdims(obj_sum_keepdims, event):
+    obj = obj_sum_keepdims
     out = event.ht
     event.pt[:] = [25.0, 12.0]
     obj.event(event)
