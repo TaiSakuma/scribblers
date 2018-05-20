@@ -20,7 +20,7 @@ def event():
 def obj(event):
     ret = AltDphiWrapper(
         pt_name='jet_pt', phi_name='jet_phi',
-        out_attr_name_dict = {'min_chi': 'minChi', 'dphi_star': 'bdphi'}
+        out_attr_name_dict={'min_chi': 'minChi', 'dphi_star': 'bdphi'}
     )
     ret.begin(event)
     yield ret
@@ -30,7 +30,7 @@ def obj(event):
 def obj_met(event):
     ret = AltDphiWrapper(
         pt_name='jet_pt', phi_name='jet_phi', mht_name='met', mht_phi_name='met_phi',
-        out_attr_name_dict = {'min_chi': 'minChi', 'dphi_star': 'bdphi'}
+        out_attr_name_dict={'min_chi': 'minChi', 'dphi_star': 'bdphi'}
     )
     ret.begin(event)
     yield ret
