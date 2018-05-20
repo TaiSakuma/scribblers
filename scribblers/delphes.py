@@ -119,18 +119,64 @@ class MHT(object):
         self.out_phi[:] = [mht_phi]
 
 ##__________________________________________________________________||
+class FourVecSum(object):
+    def __init__(
+            self,
+            obj1_pt_eta_phi_mass_names=('PT', 'Eta', 'Phi', 'Mass'),
+            obj2_pt_eta_phi_mass_names=('PT', 'Eta', 'Phi', 'Mass'),
+    ):
+        self.obj1_pt_eta_phi_mass_names = obj1_pt_eta_phi_mass_names
+        self.obj2_pt_eta_phi_mass_names = obj2_pt_eta_phi_mass_names
+
+    def __repr__(self):
+        name_value_pairs = (
+            ('obj1_pt_eta_phi_mass_names', self.obj1_pt_eta_phi_mass_names),
+            ('obj2_pt_eta_phi_mass_names', self.obj2_pt_eta_phi_mass_names),
+        )
+        return '{}({})'.format(
+            self.__class__.__name__,
+            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
+        )
+
+    def __call__(self, obj1, obj2_list):
+
+        p4_obj1 = ROOT.TLorentzVector()
+        p4_obj1.SetPtEtaPhiM(
+            getattr(obj1, self.obj1_pt_eta_phi_mass_names[0]),
+            getattr(obj1, self.obj1_pt_eta_phi_mass_names[1]),
+            getattr(obj1, self.obj1_pt_eta_phi_mass_names[2]),
+            getattr(obj1, self.obj1_pt_eta_phi_mass_names[3])
+        )
+
+        for obj2 in obj2_list:
+            p4_obj2 = ROOT.TLorentzVector()
+            p4_obj2.SetPtEtaPhiM(
+                getattr(obj2, self.obj2_pt_eta_phi_mass_names[0]),
+                getattr(obj2, self.obj2_pt_eta_phi_mass_names[1]),
+                getattr(obj2, self.obj2_pt_eta_phi_mass_names[2]),
+                getattr(obj2, self.obj2_pt_eta_phi_mass_names[3])
+            )
+            p4_obj1 += p4_obj2
+
+        ret = copy.copy(obj1)
+        setattr(ret, self.obj1_pt_eta_phi_mass_names[0], p4_obj1.Pt())
+        setattr(ret, self.obj1_pt_eta_phi_mass_names[1], p4_obj1.Eta())
+        setattr(ret, self.obj1_pt_eta_phi_mass_names[2], p4_obj1.Phi())
+        setattr(ret, self.obj1_pt_eta_phi_mass_names[3], p4_obj1.M())
+        return ret
+
 class JetAddMatchedObjects(object):
     def __init__(self, in_obj1, in_obj2,
                  out_obj1,
-                 distance_func=DeltaR(),
-                 max_distance=0.4
+                 distance_func=DeltaR(), max_distance=0.4,
+                 add_func=FourVecSum()
     ):
         self.in_obj1_name = in_obj1
         self.in_obj2_name = in_obj2
         self.out_obj1_name = out_obj1
         self.distance_func = distance_func
         self.max_distance = max_distance
-        self.add_func = ObjMerger()
+        self.add_func = add_func
 
     def __repr__(self):
         name_value_pairs = (
@@ -220,51 +266,4 @@ class JetAddMatchedObjects(object):
             ret.append(o1)
         return ret
 
-class ObjMerger(object):
-    def __init__(
-            self,
-            obj1_pt_eta_phi_mass_names=('PT', 'Eta', 'Phi', 'Mass'),
-            obj2_pt_eta_phi_mass_names=('PT', 'Eta', 'Phi', 'Mass'),
-    ):
-        self.obj1_pt_eta_phi_mass_names = obj1_pt_eta_phi_mass_names
-        self.obj2_pt_eta_phi_mass_names = obj2_pt_eta_phi_mass_names
-
-    def __repr__(self):
-        name_value_pairs = (
-            ('obj1_pt_eta_phi_mass_names', self.obj1_pt_eta_phi_mass_names),
-            ('obj2_pt_eta_phi_mass_names', self.obj2_pt_eta_phi_mass_names),
-        )
-        return '{}({})'.format(
-            self.__class__.__name__,
-            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
-        )
-
-    def __call__(self, obj1, obj2_list):
-
-        p4_obj1 = ROOT.TLorentzVector()
-        p4_obj1.SetPtEtaPhiM(
-            getattr(obj1, self.obj1_pt_eta_phi_mass_names[0]),
-            getattr(obj1, self.obj1_pt_eta_phi_mass_names[1]),
-            getattr(obj1, self.obj1_pt_eta_phi_mass_names[2]),
-            getattr(obj1, self.obj1_pt_eta_phi_mass_names[3])
-        )
-
-        for obj2 in obj2_list:
-            p4_obj2 = ROOT.TLorentzVector()
-            p4_obj2.SetPtEtaPhiM(
-                getattr(obj2, self.obj2_pt_eta_phi_mass_names[0]),
-                getattr(obj2, self.obj2_pt_eta_phi_mass_names[1]),
-                getattr(obj2, self.obj2_pt_eta_phi_mass_names[2]),
-                getattr(obj2, self.obj2_pt_eta_phi_mass_names[3])
-            )
-            p4_obj1 += p4_obj2
-
-        ret = copy.copy(obj1)
-        setattr(ret, self.obj1_pt_eta_phi_mass_names[0], p4_obj1.Pt())
-        setattr(ret, self.obj1_pt_eta_phi_mass_names[1], p4_obj1.Eta())
-        setattr(ret, self.obj1_pt_eta_phi_mass_names[2], p4_obj1.Phi())
-        setattr(ret, self.obj1_pt_eta_phi_mass_names[3], p4_obj1.M())
-        return ret
-
 ##__________________________________________________________________||
-
