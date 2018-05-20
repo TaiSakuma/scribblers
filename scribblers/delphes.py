@@ -225,9 +225,8 @@ class JetAddMatchedObjects(object):
         p4.SetPtEtaPhiM(o1.PT, o1.Eta, o1.Phi, o1.Mass)
 
         for o2 in obj2:
-
-            # this works only for GenParticle
-            p4_ = ROOT.TLorentzVector(o2.Px, o2.Py, o2.Pz, o2.E)
+            p4_ = ROOT.TLorentzVector()
+            p4_.SetPtEtaPhiM(o2.PT, o2.Eta, o2.Phi, o2.Mass)
             p4 += p4_
 
         ret = copy.copy(o1)
