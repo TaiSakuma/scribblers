@@ -3,3 +3,4 @@ pandas==0.20.3
 pytest>=3.3.0
 pytest-cov
 codecov
+altdphi
