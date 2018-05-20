@@ -212,33 +212,29 @@ class JetAddMatchedObjects(object):
         return ret
 
     def _add(self, obj1, obj2, matched):
-
-        ret = [ ]
+        ret = []
         for i, o1 in enumerate(obj1):
+            matched_obj2 = [obj2[j] for j in matched.get(i, [])]
+            o1 = self._add_obj(o1, matched_obj2)
+            ret.append(o1)
+        return ret
 
-            o1_copy = copy.copy(o1)
+    def _add_obj(self, o1, obj2):
 
-            if not i in matched:
-                ret.append(o1_copy)
-                continue
+        p4 = ROOT.TLorentzVector()
+        p4.SetPtEtaPhiM(o1.PT, o1.Eta, o1.Phi, o1.Mass)
 
-            p4 = ROOT.TLorentzVector()
-            p4.SetPtEtaPhiM(o1.PT, o1.Eta, o1.Phi, o1.Mass)
+        for o2 in obj2:
 
-            o2s = [obj2[j] for j in matched[i]]
+            # this works only for GenParticle
+            p4_ = ROOT.TLorentzVector(o2.Px, o2.Py, o2.Pz, o2.E)
+            p4 += p4_
 
-            for o2 in o2s:
-
-                # this works only for GenParticle
-                p4_ = ROOT.TLorentzVector(o2.Px, o2.Py, o2.Pz, o2.E)
-                p4 += p4_
-
-            o1_copy.PT = p4.Pt()
-            o1_copy.Eta = p4.Eta()
-            o1_copy.Phi = p4.Phi()
-            o1_copy.Mass = p4.M()
-            ret.append(o1_copy)
-
+        ret = copy.copy(o1)
+        ret.PT = p4.Pt()
+        ret.Eta = p4.Eta()
+        ret.Phi = p4.Phi()
+        ret.Mass = p4.M()
         return ret
 
 ##__________________________________________________________________||
