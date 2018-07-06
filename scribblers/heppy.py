@@ -91,7 +91,7 @@ class ArraysIntoObjectZip(object):
 
     def __init__(self,
                  in_array_prefix, in_array_names,
-                 out_obj = None, out_attr_names = None):
+                 out_obj=None, out_attr_names=None):
 
         self.in_array_prefix = in_array_prefix
         # e.g., 'jet'
@@ -111,16 +111,25 @@ class ArraysIntoObjectZip(object):
         self.in_names = ['{}_{}'.format(in_array_prefix, v) for v in in_array_names]
         # e.g., ['jet_pt', 'jet_eta', 'jet_phi']
 
-    def __repr__(self):
-        name_value_pairs = (
+        self._repr_pairs = [
             ('in_array_prefix', self.in_array_prefix),
             ('in_array_names',  self.in_array_names),
             ('out_obj',         self.out_obj),
             ('out_attr_names',  self.out_attr_names),
-        )
+        ]
+
+    def __repr__(self):
         return '{}({})'.format(
             self.__class__.__name__,
-            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
+            ', '.join(['{}={!r}'.format(n, v) for n, v in self._repr_pairs]),
+        )
+
+    def __str__(self):
+        nwidth = max(len(n) for n, _ in self._repr_pairs)
+        nwidth += 4
+        return '{}:\n{}'.format(
+            self.__class__.__name__,
+            '\n'.join(['{:>{}}: {!r}'.format(n, nwidth, v) for n, v in self._repr_pairs]),
         )
 
     def begin(self, event):

@@ -8,6 +8,14 @@ class InCertifiedLumiSections(object):
             run_attr_name='run', lumi_attr_name='lumi',
             out_attr_name='inCertifiedLumiSections'
     ):
+
+        self._repr_pairs = [
+            ('json_path', json_path),
+            ('run_attr_name', run_attr_name),
+            ('lumi_attr_name', lumi_attr_name),
+            ('out_attr_name', out_attr_name),
+        ]
+
         self.json_path = json_path
         self.run_attr_name = run_attr_name
         self.lumi_attr_name = lumi_attr_name
@@ -16,15 +24,17 @@ class InCertifiedLumiSections(object):
         self.json_dict = json.load(open(json_path))
 
     def __repr__(self):
-        name_value_pairs = (
-            ('json_path', self.json_path),
-            ('run_attr_name', self.run_attr_name),
-            ('lumi_attr_name', self.lumi_attr_name),
-            ('out_attr_name', self.out_attr_name),
-        )
         return '{}({})'.format(
             self.__class__.__name__,
-            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
+            ', '.join(['{}={!r}'.format(n, v) for n, v in self._repr_pairs]),
+        )
+
+    def __str__(self):
+        nwidth = max(len(n) for n, _ in self._repr_pairs)
+        nwidth += 4
+        return '{}:\n{}'.format(
+            self.__class__.__name__,
+            '\n'.join(['{:>{}}: {!r}'.format(n, nwidth, v) for n, v in self._repr_pairs]),
         )
 
     def begin(self, event):
