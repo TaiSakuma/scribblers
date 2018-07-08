@@ -51,3 +51,28 @@ class LheHTnoT(object):
         self.out = None
 
 ##__________________________________________________________________||
+class NLheLeptons(object):
+
+    def __repr__(self):
+        name_value_pairs = ()
+        return '{}({})'.format(
+            self.__class__.__name__,
+            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
+        )
+
+    def begin(self, event):
+        self.out = [ ]
+        self._attach_to_event(event)
+
+    def _attach_to_event(self, event):
+        event.nLheLeptons = self.out
+
+    def event(self, event):
+        self._attach_to_event(event)
+
+        status = np.array(event.GenPart_status)
+        abspdgid = np.absolute(np.array(event.GenPart_pdgId))
+        b = (status == 23) & ( (11 == abspdgid) | (13 == abspdgid) | (15 == abspdgid))
+        self.out[:] = [abspdgid[b].size]
+
+##__________________________________________________________________||
